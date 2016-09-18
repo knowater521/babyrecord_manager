@@ -21,6 +21,9 @@ from .rests import *
 
 router = routers.DefaultRouter()
 router.register('drinkmilks', DrinkMilkViewSet)
+router.register('pees', PeeViewSet)
+router.register('sleeps', SleepViewSet)
+router.register('breastbumps', BreastBumpViewSet)
 
 
 urlpatterns = [
