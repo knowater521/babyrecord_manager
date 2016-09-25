@@ -41,11 +41,11 @@ class PeeViewSet(viewsets.ModelViewSet):
 
     serializer_class = PeeSerializer
 
-    @list_route(methods=['post', 'get'])
+    @list_route(methods=['post'])
     def setpeedata(self, request):
-        record_date = request.query_params['record_date'];
-        pee_type = request.query_params['pee_type'];
-        amount = request.query_params['amount'];
+        record_date = request.data['record_date'];
+        pee_type = request.data['pee_type'];
+        amount = request.data['amount'];
 
         # 先检查该日是否已经有了
         li = Pee.objects.filter(record_date=record_date, pee_type=pee_type)
@@ -64,7 +64,7 @@ class PeeViewSet(viewsets.ModelViewSet):
         return Response({'amount': str(amount)})
 
 
-    @list_route(methods=['post', 'get'])
+    @list_route(methods=['get'])
     def getpeedata(self, request):
         record_date = request.query_params['record_date'];
         pee_type = request.query_params['pee_type'];
