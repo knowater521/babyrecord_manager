@@ -1,4 +1,7 @@
 from rest_framework import serializers, viewsets, permissions
+from rest_framework.decorators import detail_route, list_route
+from rest_framework.response import Response
+
 
 from babydata.models import *
 
@@ -37,6 +40,43 @@ class PeeViewSet(viewsets.ModelViewSet):
     queryset = Pee.objects.all()
 
     serializer_class = PeeSerializer
+
+    @list_route(methods=['post', 'get'])
+    def setpeedata(self, request):
+        record_date = request.query_params['record_date'];
+        pee_type = request.query_params['pee_type'];
+        amount = request.query_params['amount'];
+
+        # 先检查该日是否已经有了
+        li = Pee.objects.filter(record_date=record_date, pee_type=pee_type)
+
+        if len(li) == 0:
+            obj = Pee.objects.create(
+                record_date=record_date,
+                pee_type=pee_type,
+                amount=amount
+            );
+        else:
+            obj = li[0]
+            obj.amount = amount;
+            obj.save();
+
+        return Response({'amount': str(amount)})
+
+
+    @list_route(methods=['post', 'get'])
+    def getpeedata(self, request):
+        record_date = request.query_params['record_date'];
+        pee_type = request.query_params['pee_type'];
+        # 先检查该日是否已经有了
+        li = Pee.objects.filter(record_date=record_date, pee_type=pee_type)
+
+        amount = 0;
+        if len(li) > 0:
+            obj = li[0]
+            amount = obj.amount
+
+        return Response({'amount': str(amount)})
 
 
 class BreastBumpSerializer(serializers.HyperlinkedModelSerializer):
